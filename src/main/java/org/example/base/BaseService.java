@@ -82,6 +82,20 @@ public class BaseService {
     }
 
 
+    protected <T, E> Object handleResponse(Response response,
+                                           Class<T> successClass,
+                                           Class<E> errorClass) {
+
+        int statusCode = response.getStatusCode();
+
+        if (statusCode >= 200 && statusCode < 300) {
+            // Treat 2xx as success → deserialize to successClass
+            return response.as(successClass);
+        } else {
+            // Errors (4xx, 5xx) → deserialize to errorClass
+            return response.as(errorClass);
+        }
+    }
 
 
 
