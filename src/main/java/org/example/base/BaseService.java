@@ -1,7 +1,10 @@
 package org.example.base;
 
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -59,6 +62,33 @@ public class BaseService {
                 .then()
                 .extract().response();
     }
+
+    //post call
+    protected Response postWithMultipart(Object body, File file, String endpoint) {
+        return given()
+                .multiPart(file)
+                .body(body)
+                .when()
+                .post(endpoint)
+                .then()
+                .extract().response();
+    }
+
+    //post call
+    protected Response postWithListOfMultipart(Object body, List<File> files, String endpoint) {
+        RequestSpecification requestSpecification = given();
+
+        for(File f : files){
+            requestSpecification.multiPart(f);
+        }
+        return requestSpecification
+                .body(body)
+                .when()
+                .post(endpoint)
+                .then()
+                .extract().response();
+    }
+
 
     //put call
     protected  Response put(Object body,String endpoint){
